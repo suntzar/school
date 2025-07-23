@@ -7,32 +7,37 @@ Este projeto é um gerenciador de alunos simples e intuitivo, projetado para esc
 ## Funcionalidades Implementadas
 
 *   **CRUD de Alunos:** Criação, leitura, atualização e exclusão de registros de alunos.
-*   **Armazenamento Local:** Os dados dos alunos são persistidos no LocalStorage do navegador, garantindo que as informações não sejam perdidas ao fechar a página.
-*   **Upload/Download de JSON:** Capacidade de carregar dados de alunos a partir de um arquivo JSON e exportar a lista atual para um arquivo JSON.
-*   **Organização por Turma e Turno:** Alunos são agrupados e exibidos pela combinação de turma e turno para facilitar a visualização e gestão.
-*   **Design Responsivo:** A interface se adapta a diferentes tamanhos de tela (desktop, tablet, celular).
-*   **Ícones Visuais:** Utilização de Feather Icons para botões de ação e status, melhorando a compreensão.
-*   **Modais Interativos:** Modais para adicionar/editar alunos e confirmar exclusão, com campos de formulário bem organizados.
+*   **Armazenamento Local:** Os dados dos alunos são persistidos no LocalStorage do navegador.
+*   **Upload/Download de JSON:** Capacidade de carregar e exportar la lista de alunos.
+*   **Organização por Turma e Turno:** Alunos são agrupados pela combinação de turma e turno.
+*   **Pesquisa Avançada:** Um campo de busca permite filtrar alunos em tempo real por nome, CPF, nome da mãe ou nome do pai.
+*   **Design Responsivo:** A interface se adapta a diferentes tamanhos de tela.
+*   **Ícones Visuais:** Utilização de Feather Icons para botões de ação e status.
+*   **Modais Interativos:** Modais para adicionar/editar alunos e confirmar exclusão.
 
 ## Design e Estilo (Versão Atual)
 
 *   **Tema:** Branco predominante com elementos coloridos em tons pastel.
 *   **Layout:** Limpo e estruturado, com cards para cada aluno e seções claras.
 *   **Tipografia:** Fontes modernas e legíveis, com hierarquia clara.
-*   **Cores:** Paleta pastel para elementos de destaque (botões, cabeçalhos de turma, badges de status).
+*   **Cores:** Paleta pastel para elementos de destaque.
 *   **Elementos Visuais:**
     *   Botões com sombras sutis e bordas arredondadas.
     *   Cards de alunos com efeito de elevação ao passar o mouse.
-    *   Cabeçalhos de turma destacados com cor e borda inferior.
-    *   Badges de status com cores correspondentes (Ativo - verde, Transferido - laranja, Inativo - cinza).
-*   **Interatividade:** Pequenas transições suaves em botões e cards ao interagir.
+    *   Cabeçalhos de turma destacados.
+    *   Badges de status coloridos.
+*   **Interatividade:** Transições suaves em botões e cards.
 
 ## Plano para a Próxima Alteração (Atual)
 
-O objetivo desta alteração é refinar a organização dos alunos, agrupando-os pela combinação de "Turma - Turno", para uma visualização mais granular e organizada.
+O objetivo desta alteração é implementar um sistema de pesquisa avançado e bem planejado.
 
-1.  **Estrutura HTML:** Manter a estrutura atual.
-2.  **Estilos CSS:** Manter os estilos existentes, pois a alteração é na lógica de agrupamento.
-3.  **JavaScript (`renderStudentList`):**
-    *   Modificar a lógica de `groupedByTurma` para usar uma chave `turma - turno`.
-    *   Ajustar o texto do `turmaTitle` para exibir a nova combinação.
+1.  **Estrutura HTML:** Adicionar um campo de input para a busca acima da lista de alunos.
+2.  **Estilos CSS:** Estilizar o novo campo de busca para se integrar ao design existente.
+3.  **JavaScript:**
+    *   Criar uma nova variável global para armazenar o termo da busca.
+    *   Adicionar um event listener ao campo de busca para disparar a filtragem em tempo real (evento `input`).
+    *   Modificar a função `renderStudentList` para que ela possa receber uma lista de alunos filtrada.
+    *   A lógica de filtragem irá considerar os campos: `nome`, `cpf`, `mae` e `pai`.
+    *   Implementar o destaque do termo pesquisado nos resultados.
+    *   Exibir uma mensagem amigável quando a busca não retornar resultados.

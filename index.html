@@ -298,24 +298,25 @@
             
             placeholder.style.display = 'none';
 
-            const groupedByTurma = students.reduce((acc, student, index) => {
-                const turma = student.turma || 'Sem Turma';
-                if (!acc[turma]) acc[turma] = [];
-                acc[turma].push({ ...student, originalIndex: index });
+            // Group and sort students by 'turma - turno'
+            const groupedByTurmaTurno = students.reduce((acc, student, index) => {
+                const turmaTurno = `${student.turma || 'Sem Turma'} - ${student.turno || 'Sem Turno'}`;
+                if (!acc[turmaTurno]) acc[turmaTurno] = [];
+                acc[turmaTurno].push({ ...student, originalIndex: index });
                 return acc;
             }, {});
 
-            const sortedTurmas = Object.keys(groupedByTurma).sort();
+            const sortedTurmaTurno = Object.keys(groupedByTurmaTurno).sort();
 
-            sortedTurmas.forEach(turma => {
+            sortedTurmaTurno.forEach(turmaTurno => {
                 const turmaTitle = document.createElement('h4');
                 turmaTitle.className = 'turma-title';
-                turmaTitle.textContent = turma;
+                turmaTitle.textContent = turmaTurno;
                 container.appendChild(turmaTitle);
 
-                groupedByTurma[turma].sort((a, b) => a.nome.localeCompare(b.nome));
+                groupedByTurmaTurno[turmaTurno].sort((a, b) => a.nome.localeCompare(b.nome));
 
-                groupedByTurma[turma].forEach(student => {
+                groupedByTurmaTurno[turmaTurno].forEach(student => {
                     const card = document.createElement('div');
                     card.className = 'card student-card mb-3';
                     card.innerHTML = `
@@ -323,7 +324,7 @@
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <h5 class="card-title mb-1">${student.nome} ${getStatusBadge(student.status)}</h5>
-                                    <h6 class="card-subtitle mb-2 text-muted">${student.turno || 'Turno não informado'}</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">CPF: ${student.cpf || '---'}</h6>
                                 </div>
                                 <div class="d-flex gap-2">
                                     <button class="btn btn-sm btn-outline-primary" onclick="openStudentModal(${student.originalIndex})">
@@ -335,7 +336,6 @@
                                 </div>
                             </div>
                             <hr>
-                            <p class="card-text mb-1"><strong>CPF:</strong> ${student.cpf || '---'}</p>
                             <p class="card-text mb-1"><strong>Mãe:</strong> ${student.mae || '---'}</p>
                             <p class="card-text mb-1"><strong>Pai:</strong> ${student.pai || '---'}</p>
                             <p class="card-text mb-1"><strong>Telefone:</strong> ${student.telefone && student.telefone.length ? student.telefone.join(', ') : '---'}</p>

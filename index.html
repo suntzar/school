@@ -1,14 +1,449 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="pt-BR" data-bs-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Alunos</title>
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <style>
+        /* Estilos personalizados para melhorar a experiência */
+        body {
+            background-color: #f8f9fa;
+        }
+        .action-bar {
+            background-color: #fff;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            margin-bottom: 1.5rem;
+        }
+        .student-card {
+            transition: box-shadow 0.2s ease-in-out;
+        }
+        .student-card:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            font-weight: 500;
+        }
+        .feather {
+            width: 1rem;
+            height: 1rem;
+            vertical-align: text-bottom;
+            margin-right: 0.25rem;
+        }
+        .btn .feather {
+             margin-right: 0.5rem;
+        }
+        .turma-title {
+            color: #0d6efd;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #dee2e6;
+        }
+        /* Ajuste para input de arquivo escondido */
+        #jsonFileInput {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+
+    <div class="container py-3">
+        <header class="text-center mb-4">
+            <h1 class="display-6">Gerenciador de Alunos</h1>
+            <p class="text-muted">Adicione, edite, remova e salve a lista de alunos.</p>
+        </header>
+
+        <!-- Barra de Ações Principais -->
+        <div class="action-bar d-flex flex-wrap justify-content-center gap-2">
+            <button class="btn btn-primary" onclick="triggerFileUpload()">
+                <i data-feather="folder-plus"></i>Carregar JSON
+            </button>
+            <input type="file" id="jsonFileInput" accept=".json" onchange="handleFileLoad(event)">
+            
+            <button class="btn btn-success" onclick="downloadJSON()">
+                <i data-feather="download"></i>Baixar JSON
+            </button>
+
+            <button class="btn btn-info text-white" onclick="openStudentModal()">
+                <i data-feather="plus-circle"></i>Adicionar Aluno
+            </button>
+        </div>
+
+        <!-- Container para a lista de alunos -->
+        <div id="student-list-container">
+            <!-- Os cards dos alunos serão inseridos aqui pelo JavaScript -->
+        </div>
+        <p id="placeholder" class="text-center text-muted mt-5">Nenhum aluno na lista. Carregue um arquivo JSON ou adicione um novo aluno.</p>
+
+    </div>
+
+    <!-- Modal para Adicionar/Editar Aluno -->
+    <div class="modal fade" id="studentModal" tabindex="-1" aria-labelledby="studentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="studentModalLabel">Dados do Aluno</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="studentForm">
+                        <input type="hidden" id="studentIndex">
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome Completo</label>
+                            <input type="text" class="form-control" id="nome" required>
+                        </div>
+                        <div class="row">
+                             <div class="col-md-7 mb-3">
+                                <label for="cpf" class="form-label">CPF do Aluno</label>
+                                <input type="text" class="form-control" id="cpf" placeholder="000.000.000-00">
+                            </div>
+                            <div class="col-md-5 mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select id="status" class="form-select">
+                                    <option value="Ativo" selected>Ativo</option>
+                                    <option value="Transferido">Transferido</option>
+                                    <option value="Inativo">Inativo</option>
+                                </select>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="turma" class="form-label">Turma</label>
+                                <input type="text" class="form-control" id="turma" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="turno" class="form-label">Turno</label>
+                                <input type="text" class="form-control" id="turno">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nascimento" class="form-label">Data de Nascimento</label>
+                            <input type="text" class="form-control" id="nascimento" placeholder="dd/mm/aaaa">
+                        </div>
+                         <div class="mb-3">
+                            <label for="mae" class="form-label">Nome da Mãe</label>
+                            <input type="text" class="form-control" id="mae">
+                        </div>
+                         <div class="mb-3">
+                            <label for="pai" class="form-label">Nome do Pai</label>
+                            <input type="text" class="form-control" id="pai">
+                        </div>
+                         <div class="mb-3">
+                            <label for="telefone" class="form-label">Telefone(s)</label>
+                            <input type="text" class="form-control" id="telefone" placeholder="Separe com vírgula: 98..., 99...">
+                        </div>
+                         <div class="mb-3">
+                            <label for="endereco" class="form-label">Endereço</label>
+                            <input type="text" class="form-control" id="endereco">
+                        </div>
+                         <div class="mb-3">
+                            <label for="cor" class="form-label">Cor/Raça</label>
+                            <input type="text" class="form-control" id="cor">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="saveStudent()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Confirmação de Exclusão -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmar Exclusão</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Você tem certeza que deseja remover este aluno? Esta ação não pode ser desfeita.</p>
+            <p class="text-danger fw-bold" id="studentNameToDelete"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Confirmar Exclusão</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Feather Icons -->
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
+    <script>
+        // ===================================================================================
+        // VARIÁVEIS GLOBAIS E INICIALIZAÇÃO
+        // ===================================================================================
+        let students = [];
+        let studentModal, deleteModal;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            studentModal = new bootstrap.Modal(document.getElementById('studentModal'));
+            deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+            loadFromLocalStorage();
+            renderStudentList();
+        });
+
+
+        // ===================================================================================
+        // GERENCIAMENTO DE DADOS (LocalStorage, Upload, Download)
+        // ===================================================================================
+
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('studentDatabase', JSON.stringify(students));
+                console.log('Dados salvos no LocalStorage.');
+            } catch (error) {
+                console.error('Erro ao salvar no LocalStorage:', error);
+                alert('Não foi possível salvar os dados. O armazenamento pode estar cheio.');
+            }
+        }
+
+        function loadFromLocalStorage() {
+            const data = localStorage.getItem('studentDatabase');
+            if (data) {
+                try {
+                    students = JSON.parse(data);
+                    console.log('Dados carregados do LocalStorage.');
+                } catch (error) {
+                    console.error('Erro ao ler dados do LocalStorage:', error);
+                    students = [];
+                }
+            }
+        }
+
+        function triggerFileUpload() {
+            document.getElementById('jsonFileInput').click();
+        }
+
+        function handleFileLoad(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (Array.isArray(data)) {
+                        students = data;
+                        saveAndRender();
+                        alert(`${students.length} alunos carregados com sucesso!`);
+                    } else {
+                        alert('Erro: O arquivo JSON não contém um array de alunos válido.');
+                    }
+                } catch (error) {
+                    alert('Erro ao processar o arquivo. Verifique se é um JSON válido.');
+                    console.error(error);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = null;
+        }
+
+        function downloadJSON() {
+            if (students.length === 0) {
+                alert('Não há dados para baixar.');
+                return;
+            }
+            const dataStr = JSON.stringify(students, null, 4);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'database_alunos.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // ===================================================================================
+        // RENDERIZAÇÃO DA LISTA DE ALUNOS
+        // ===================================================================================
+
+        function getStatusBadge(status) {
+            status = status || 'Ativo'; // Padrão é Ativo se não definido
+            const statusColors = {
+                'Ativo': 'bg-success',
+                'Transferido': 'bg-warning text-dark',
+                'Inativo': 'bg-secondary',
+            };
+            const colorClass = statusColors[status] || 'bg-light text-dark';
+            return `<span class="badge ${colorClass}">${status}</span>`;
+        }
+
+        function renderStudentList() {
+            const container = document.getElementById('student-list-container');
+            const placeholder = document.getElementById('placeholder');
+            container.innerHTML = '';
+
+            if (students.length === 0) {
+                placeholder.style.display = 'block';
+                return;
+            }
+            
+            placeholder.style.display = 'none';
+
+            const groupedByTurma = students.reduce((acc, student, index) => {
+                const turma = student.turma || 'Sem Turma';
+                if (!acc[turma]) acc[turma] = [];
+                acc[turma].push({ ...student, originalIndex: index });
+                return acc;
+            }, {});
+
+            const sortedTurmas = Object.keys(groupedByTurma).sort();
+
+            sortedTurmas.forEach(turma => {
+                const turmaTitle = document.createElement('h4');
+                turmaTitle.className = 'turma-title';
+                turmaTitle.textContent = turma;
+                container.appendChild(turmaTitle);
+
+                groupedByTurma[turma].sort((a, b) => a.nome.localeCompare(b.nome));
+
+                groupedByTurma[turma].forEach(student => {
+                    const card = document.createElement('div');
+                    card.className = 'card student-card mb-3';
+                    card.innerHTML = `
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="card-title mb-1">${student.nome} ${getStatusBadge(student.status)}</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">${student.turno || 'Turno não informado'}</h6>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="openStudentModal(${student.originalIndex})">
+                                        <i data-feather="edit-2"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete(${student.originalIndex})">
+                                        <i data-feather="trash-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <hr>
+                            <p class="card-text mb-1"><strong>CPF:</strong> ${student.cpf || '---'}</p>
+                            <p class="card-text mb-1"><strong>Mãe:</strong> ${student.mae || '---'}</p>
+                            <p class="card-text mb-1"><strong>Pai:</strong> ${student.pai || '---'}</p>
+                            <p class="card-text mb-1"><strong>Telefone:</strong> ${student.telefone && student.telefone.length ? student.telefone.join(', ') : '---'}</p>
+                            <p class="card-text mb-1"><strong>Endereço:</strong> ${student.endereco || '---'}</p>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            });
+
+            feather.replace();
+        }
+
+
+        // ===================================================================================
+        // LÓGICA DO MODAL E CRUD (Create, Read, Update, Delete)
+        // ===================================================================================
+
+        function openStudentModal(index = null) {
+            const form = document.getElementById('studentForm');
+            form.reset();
+
+            const modalTitle = document.getElementById('studentModalLabel');
+            const studentIndexInput = document.getElementById('studentIndex');
+
+            if (index !== null) {
+                // Modo Edição
+                modalTitle.textContent = 'Editar Dados do Aluno';
+                const student = students[index];
+                studentIndexInput.value = index;
+                document.getElementById('nome').value = student.nome;
+                document.getElementById('cpf').value = student.cpf || '';
+                document.getElementById('status').value = student.status || 'Ativo';
+                document.getElementById('turma').value = student.turma;
+                document.getElementById('turno').value = student.turno || '';
+                document.getElementById('nascimento').value = student.nascimento || '';
+                document.getElementById('mae').value = student.mae || '';
+                document.getElementById('pai').value = student.pai || '';
+                document.getElementById('telefone').value = student.telefone ? student.telefone.join(', ') : '';
+                document.getElementById('endereco').value = student.endereco || '';
+                document.getElementById('cor').value = student.cor || '';
+            } else {
+                // Modo Adição
+                modalTitle.textContent = 'Adicionar Novo Aluno';
+                studentIndexInput.value = '';
+                document.getElementById('status').value = 'Ativo'; // Padrão para novos alunos
+            }
+
+            studentModal.show();
+        }
+
+        function saveStudent() {
+            const index = document.getElementById('studentIndex').value;
+            
+            const telefones = document.getElementById('telefone').value.split(',')
+                .map(t => t.trim())
+                .filter(t => t);
+
+            const studentData = {
+                nome: document.getElementById('nome').value,
+                cpf: document.getElementById('cpf').value,
+                status: document.getElementById('status').value,
+                turma: document.getElementById('turma').value,
+                turno: document.getElementById('turno').value,
+                nascimento: document.getElementById('nascimento').value,
+                mae: document.getElementById('mae').value,
+                pai: document.getElementById('pai').value,
+                telefone: telefones,
+                endereco: document.getElementById('endereco').value,
+                cor: document.getElementById('cor').value,
+            };
+
+            if (!studentData.nome || !studentData.turma) {
+                alert('Os campos "Nome" e "Turma" são obrigatórios.');
+                return;
+            }
+
+            if (index) {
+                students[index] = studentData;
+            } else {
+                students.push(studentData);
+            }
+
+            saveAndRender();
+            studentModal.hide();
+        }
+
+        function confirmDelete(index) {
+            const student = students[index];
+            document.getElementById('studentNameToDelete').textContent = student.nome;
+            
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+            document.getElementById('confirmDeleteBtn').addEventListener('click', () => deleteStudent(index));
+
+            deleteModal.show();
+        }
+
+        function deleteStudent(index) {
+            students.splice(index, 1);
+            saveAndRender();
+            deleteModal.hide();
+        }
+        
+        function saveAndRender() {
+            saveToLocalStorage();
+            renderStudentList();
+        }
+    </script>
 </body>
 </html>

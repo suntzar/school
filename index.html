@@ -3,257 +3,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciador Escolar - ABC Kids</title>
+    <title>Gerenciador de Alunos - Escola Infantil</title>
 
     <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-    <!-- Google Fonts: Poppins para títulos e Lato para corpo -->
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
     <style>
+        /* Variáveis CSS para a paleta de cores pastel */
         :root {
-            --primary-light: #FFD1DC; /* Rosa claro */
-            --primary-normal: #FF69B4; /* Rosa vibrante */
-            --primary-dark: #C71585; /* Rosa escuro */
-            --secondary-light: #A7DBD8; /* Azul água claro */
-            --secondary-normal: #69D2E7; /* Azul água vibrante */
-            --accent-light: #FFECB3; /* Amarelo claro */
-            --accent-normal: #FFC107; /* Amarelo vibrante */
-            --text-dark: #343a40;
-            --text-muted: #6c757d;
-            --bg-light: #fdfdff; /* Quase branco */
-            --card-bg: #ffffff;
-            --border-color: #e9ecef;
-            --shadow-light: rgba(0, 0, 0, 0.05);
-            --shadow-normal: rgba(0, 0, 0, 0.1);
+            --primary-pastel: #8ECDDD; /* Azul claro */
+            --success-pastel: #A2D991; /* Verde claro */
+            --info-pastel: #FFD299; /* Laranja claro */
+            --warning-pastel: #FFB74D; /* Laranja um pouco mais forte para badges */
+            --danger-pastel: #FF9999; /* Vermelho claro */
+            --secondary-pastel: #CBCBCB; /* Cinza claro */
+            --text-dark: #34495E; /* Azul escuro para textos principais */
+            --text-muted: #7F8C8D; /* Cinza para textos secundários */
+            --bg-light: #F8F9FA; /* Fundo geral claro */
+            --card-bg: #FFFFFF; /* Fundo dos cards */
+            --border-light: #E0E0E0; /* Cor de borda suave */
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-hover: rgba(0, 0, 0, 0.15);
         }
 
         body {
-            font-family: 'Lato', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-light);
             color: var(--text-dark);
             line-height: 1.6;
         }
 
         h1, h2, h3, h4, h5, h6 {
-            font-family: 'Poppins', sans-serif;
-            color: var(--primary-dark);
+            color: var(--text-dark);
+            font-weight: 600;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 960px;
         }
 
         header {
-            background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary-light) 100%);
-            padding: 3rem 0;
+            background-color: var(--card-bg);
+            padding: 2.5rem 1.5rem;
             margin-bottom: 2rem;
-            border-bottom-left-radius: 25px;
-            border-bottom-right-radius: 25px;
-            box-shadow: 0 5px 15px var(--shadow-normal);
+            border-bottom-left-radius: 1.5rem;
+            border-bottom-right-radius: 1.5rem;
+            box-shadow: 0 5px 15px var(--shadow-light);
+            text-align: center;
         }
 
         header h1 {
-            color: white;
-            font-size: 3.5rem;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px var(--shadow-normal);
+            font-size: 2.8rem;
+            color: var(--primary-pastel);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+            margin-bottom: 0.5rem;
         }
 
         header p {
-            color: white;
             font-size: 1.1rem;
-            opacity: 0.9;
+            color: var(--text-muted);
         }
 
         .action-bar {
             background-color: var(--card-bg);
-            padding: 1.25rem;
+            padding: 1.2rem 1.5rem;
             border-radius: 1rem;
-            box-shadow: 0 5px 20px var(--shadow-light);
-            margin-bottom: 2.5rem;
+            box-shadow: 0 4px 12px var(--shadow-light);
+            margin-bottom: 2rem;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 1rem; /* Espaçamento entre os botões */
         }
 
-        .btn {
-            font-weight: 600;
+        .action-bar .btn {
+            font-weight: 500;
+            padding: 0.8rem 1.5rem;
             border-radius: 0.75rem;
-            padding: 0.75rem 1.5rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .btn-primary {
-            background-color: var(--primary-normal);
-            border-color: var(--primary-normal);
+        .action-bar .btn-primary {
+            background-color: var(--primary-pastel);
+            border-color: var(--primary-pastel);
+            color: var(--text-dark);
         }
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-            border-color: var(--primary-dark);
+        .action-bar .btn-primary:hover {
+            background-color: #74C0D6; /* Um pouco mais escuro */
+            border-color: #74C0D6;
             transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .btn-success {
-            background-color: #28a745; /* Verde Bootstrap padrão */
-            border-color: #28a745;
+        .action-bar .btn-success {
+            background-color: var(--success-pastel);
+            border-color: var(--success-pastel);
+            color: var(--text-dark);
         }
-        .btn-success:hover {
-            background-color: #218838;
-            border-color: #1e7e34;
+        .action-bar .btn-success:hover {
+            background-color: #8FD082; /* Um pouco mais escuro */
+            border-color: #8FD082;
             transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .btn-info {
-            background-color: var(--secondary-normal);
-            border-color: var(--secondary-normal);
-            color: white !important; /* Forçar texto branco */
+        .action-bar .btn-info {
+            background-color: var(--info-pastel);
+            border-color: var(--info-pastel);
+            color: var(--text-dark) !important; /* Forçar cor do texto para contraste */
         }
-        .btn-info:hover {
-            background-color: #5bc0de; /* Um pouco mais escuro */
-            border-color: #5bc0de;
+        .action-bar .btn-info:hover {
+            background-color: #E6B57E; /* Um pouco mais escuro */
+            border-color: #E6B57E;
             transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .btn .feather {
-            margin-right: 0.6rem;
-            width: 1.1rem;
-            height: 1.1rem;
-        }
-
+        /* Ajuste para input de arquivo escondido */
         #jsonFileInput {
             display: none;
         }
 
         .turma-title {
-            background-color: var(--primary-light);
-            color: var(--primary-dark);
-            padding: 1rem 1.5rem;
-            margin-top: 3rem;
-            margin-bottom: 1.5rem;
-            border-radius: 0.75rem;
-            font-size: 1.8rem;
+            color: var(--primary-pastel);
             font-weight: 700;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 3px 10px var(--shadow-light);
+            font-size: 1.8rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 3px solid var(--border-light);
+            position: relative;
         }
-
-        .turma-title .feather {
-            margin-right: 0.75rem;
-            color: var(--primary-dark);
+        .turma-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -3px; /* Alinha com a borda inferior */
+            width: 80px; /* Largura da linha colorida */
+            height: 3px;
+            background-color: var(--primary-pastel);
+            border-radius: 2px;
         }
 
         .student-card {
             background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 0.85rem;
-            box-shadow: 0 2px 10px var(--shadow-light);
-            transition: all 0.3s ease;
-            margin-bottom: 1.25rem;
-            overflow: hidden; /* Garante que o hover de shadow não vaze */
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px var(--shadow-light);
+            transition: all 0.3s ease-in-out;
+            margin-bottom: 1.5rem; /* Espaçamento entre os cards */
         }
         .student-card:hover {
-            box-shadow: 0 8px 25px var(--shadow-normal);
             transform: translateY(-5px);
+            box-shadow: 0 8px 25px var(--shadow-hover);
         }
 
         .student-card .card-body {
-            padding: 1.5rem;
+            padding: 1.8rem;
         }
 
         .student-card .card-title {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 600;
-            color: var(--primary-dark);
-            margin-bottom: 0.5rem;
+            color: var(--text-dark);
             display: flex;
             align-items: center;
-        }
-
-        .student-card .card-title .badge {
-            margin-left: 0.75rem;
-            font-size: 0.85rem;
-            padding: 0.4em 0.7em;
-            border-radius: 0.5rem;
-            font-weight: 600;
+            flex-wrap: wrap; /* Permite que o badge vá para a linha de baixo se necessário */
+            gap: 0.5rem;
         }
 
         .student-card .card-subtitle {
-            font-size: 0.95rem;
+            font-size: 1rem;
             color: var(--text-muted);
-            margin-bottom: 1rem;
+            margin-top: 0.25rem;
         }
 
         .student-card hr {
-            border-top: 1px solid var(--border-color);
-            margin: 1rem 0;
+            margin: 1.2rem 0;
+            border-top: 1px dashed var(--border-light);
         }
 
         .student-card .card-text {
-            font-size: 0.98rem;
-            margin-bottom: 0.6rem;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            margin-bottom: 0.4rem;
         }
-
         .student-card .card-text strong {
             color: var(--text-dark);
+            min-width: 90px; /* Alinha os dois pontos */
+            display: inline-block;
         }
 
         .student-card .btn-sm {
-            padding: 0.45rem 0.65rem;
+            padding: 0.5rem 0.6rem;
             border-radius: 0.5rem;
-            font-size: 0.85rem;
-            transition: transform 0.2s ease;
+            transition: all 0.2s ease-in-out;
+            border-width: 2px; /* Aumenta a borda para dar mais destaque */
+        }
+        .student-card .btn-outline-primary {
+            color: var(--primary-pastel);
+            border-color: var(--primary-pastel);
+        }
+        .student-card .btn-outline-primary:hover {
+            background-color: var(--primary-pastel);
+            color: white;
+        }
+        .student-card .btn-outline-danger {
+            color: var(--danger-pastel);
+            border-color: var(--danger-pastel);
+        }
+        .student-card .btn-outline-danger:hover {
+            background-color: var(--danger-pastel);
+            color: white;
         }
 
-        .student-card .btn-sm:hover {
-            transform: translateY(-1px);
+        /* Badges de Status */
+        .badge {
+            font-size: 0.8em;
+            padding: 0.4em 0.8em;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            vertical-align: middle;
         }
+        .badge.bg-success { background-color: var(--success-pastel) !important; color: var(--text-dark) !important; }
+        .badge.bg-warning { background-color: var(--warning-pastel) !important; color: var(--text-dark) !important; }
+        .badge.bg-secondary { background-color: var(--secondary-pastel) !important; color: var(--text-dark) !important; }
 
-        /* Cores dos badges de status */
-        .badge.bg-success { background-color: #28a745 !important; }
-        .badge.bg-warning { background-color: #ffc107 !important; color: #343a40 !important; }
-        .badge.bg-secondary { background-color: #6c757d !important; }
-
+        /* Placeholder de lista vazia */
         #placeholder {
             font-size: 1.2rem;
             color: var(--text-muted);
-            padding: 3rem;
-            border: 2px dashed var(--border-color);
+            padding: 3rem 0;
+            border: 2px dashed var(--border-light);
             border-radius: 1rem;
-            margin-top: 4rem !important;
             background-color: var(--card-bg);
+            margin-top: 3rem !important;
         }
 
-        /* Modal styling */
+        /* Modals */
         .modal-content {
             border-radius: 1rem;
-            box-shadow: 0 10px 30px var(--shadow-normal);
+            box-shadow: 0 8px 30px var(--shadow-hover);
             border: none;
         }
-
         .modal-header {
-            background-color: var(--primary-light);
+            background-color: var(--primary-pastel);
+            color: var(--text-dark);
             border-top-left-radius: 1rem;
             border-top-right-radius: 1rem;
-            border-bottom: 1px solid var(--border-color);
             padding: 1.5rem;
+            border-bottom: none;
         }
-
-        .modal-title {
-            color: var(--primary-dark);
+        .modal-header .modal-title {
+            color: var(--text-dark);
             font-weight: 700;
-            font-size: 1.75rem;
         }
-
+        .modal-header .btn-close {
+            filter: invert(0.5) sepia(1) saturate(5) hue-rotate(175deg) brightness(0.9); /* Adapta o X para a cor do header */
+        }
         .modal-body {
             padding: 2rem;
+        }
+        .modal-footer {
+            border-top: 1px solid var(--border-light);
+            padding: 1.5rem 2rem;
+        }
+        .modal-footer .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+        }
+        .modal-footer .btn-primary {
+            background-color: var(--success-pastel);
+            border-color: var(--success-pastel);
+            color: var(--text-dark);
+        }
+        .modal-footer .btn-primary:hover {
+            background-color: #8FD082;
+            border-color: #8FD082;
+        }
+        .modal-footer .btn-secondary {
+            background-color: var(--secondary-pastel);
+            border-color: var(--secondary-pastel);
+            color: var(--text-dark);
+        }
+        .modal-footer .btn-secondary:hover {
+            background-color: #B0B0B0;
+            border-color: #B0B0B0;
+        }
+        .modal-footer .btn-danger {
+             background-color: var(--danger-pastel);
+             border-color: var(--danger-pastel);
+             color: var(--text-dark);
+        }
+        .modal-footer .btn-danger:hover {
+            background-color: #E06060;
+            border-color: #E06060;
         }
 
         .form-label {
@@ -261,82 +309,71 @@
             color: var(--text-dark);
             margin-bottom: 0.5rem;
         }
-
         .form-control, .form-select {
             border-radius: 0.5rem;
-            border: 1px solid var(--border-color);
+            border-color: var(--border-light);
             padding: 0.75rem 1rem;
-            font-size: 1rem;
         }
-
         .form-control:focus, .form-select:focus {
-            border-color: var(--secondary-normal);
-            box-shadow: 0 0 0 0.25rem rgba(105, 210, 231, 0.25); /* Sombra suave do azul água */
+            border-color: var(--primary-pastel);
+            box-shadow: 0 0 0 0.25rem rgba(142, 205, 221, 0.25);
         }
 
-        .modal-footer {
-            border-top: 1px solid var(--border-color);
-            padding: 1.25rem 2rem;
-        }
-
-        .modal-footer .btn {
-            min-width: 120px;
-        }
-
-        /* Feather Icons base style */
         .feather {
-            width: 1rem;
-            height: 1rem;
-            stroke-width: 2;
-            stroke: currentColor;
-            fill: none;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+            width: 1.1rem;
+            height: 1.1rem;
+            vertical-align: -0.125em; /* Ajuste fino para alinhamento */
+            stroke-width: 2.5; /* Deixa os ícones um pouco mais grossos */
         }
 
-        /* Responsividade */
+        /* Responsividade para telas menores */
         @media (max-width: 768px) {
             header h1 {
-                font-size: 2.5rem;
+                font-size: 2rem;
             }
             .action-bar {
-                flex-direction: column;
-                align-items: stretch;
+                padding: 1rem;
+                gap: 0.75rem;
             }
-            .btn {
-                width: 100%;
+            .action-bar .btn {
+                width: 100%; /* Botões ocupam a largura total em telas pequenas */
+                justify-content: center;
+            }
+            .student-card .card-body {
+                padding: 1.2rem;
+            }
+            .student-card .card-title {
+                font-size: 1.3rem;
             }
             .turma-title {
                 font-size: 1.5rem;
-                padding: 0.8rem 1rem;
-            }
-            .student-card .card-title {
-                font-size: 1.4rem;
+                margin-top: 2rem;
+                margin-bottom: 1rem;
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="container py-3">
-        <header class="text-center">
-            <h1 class="display-6">Gerenciador Escolar <br> <small>ABC Kids</small></h1>
-            <p class="lead">Simplificando a organização de alunos para a sua escola de educação infantil.</p>
+    <div class="container py-4">
+        <header>
+            <h1>Gerenciador de Alunos</h1>
+            <p>Organize e gerencie os dados dos alunos da sua escola infantil.</p>
         </header>
 
         <!-- Barra de Ações Principais -->
         <div class="action-bar">
             <button class="btn btn-primary" onclick="triggerFileUpload()">
-                <i data-feather="upload-cloud"></i>Carregar Dados
+                <i data-feather="folder-plus"></i>Carregar Lista
             </button>
             <input type="file" id="jsonFileInput" accept=".json" onchange="handleFileLoad(event)">
             
             <button class="btn btn-success" onclick="downloadJSON()">
-                <i data-feather="download"></i>Baixar Dados
+                <i data-feather="download"></i>Baixar Lista
             </button>
 
-            <button class="btn btn-info" onclick="openStudentModal()">
-                <i data-feather="user-plus"></i>Adicionar Aluno
+            <button class="btn btn-info text-white" onclick="openStudentModal()">
+                <i data-feather="plus-circle"></i>Adicionar Aluno
             </button>
         </div>
 
@@ -344,15 +381,16 @@
         <div id="student-list-container">
             <!-- Os cards dos alunos serão inseridos aqui pelo JavaScript -->
         </div>
-        <p id="placeholder" class="text-center">
-            <i data-feather="info" class="me-2"></i>Nenhum aluno na lista. <br>Carregue um arquivo JSON ou adicione um novo aluno para começar!
+        <p id="placeholder" class="text-center text-muted mt-5">
+            <i data-feather="users" style="width: 3rem; height: 3rem; color: var(--secondary-pastel);"></i><br><br>
+            Nenhum aluno na lista. Utilize os botões acima para carregar um arquivo ou adicionar um novo aluno.
         </p>
 
     </div>
 
     <!-- Modal para Adicionar/Editar Aluno -->
     <div class="modal fade" id="studentModal" tabindex="-1" aria-labelledby="studentModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="studentModalLabel">Dados do Aluno</h5>
@@ -362,7 +400,7 @@
                     <form id="studentForm">
                         <input type="hidden" id="studentIndex">
                         <div class="mb-3">
-                            <label for="nome" class="form-label">Nome Completo do Aluno <span class="text-danger">*</span></label>
+                            <label for="nome" class="form-label">Nome Completo</label>
                             <input type="text" class="form-control" id="nome" required>
                         </div>
                         <div class="row">
@@ -379,10 +417,10 @@
                                 </select>
                             </div>
                         </div>
-                        <h5 class="mt-4 mb-3 text-muted">Informações da Turma</h5>
+                        <hr>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="turma" class="form-label">Turma <span class="text-danger">*</span></label>
+                                <label for="turma" class="form-label">Turma</label>
                                 <input type="text" class="form-control" id="turma" required>
                             </div>
                             <div class="col-md-6 mb-3">
@@ -394,7 +432,6 @@
                             <label for="nascimento" class="form-label">Data de Nascimento</label>
                             <input type="text" class="form-control" id="nascimento" placeholder="dd/mm/aaaa">
                         </div>
-                        <h5 class="mt-4 mb-3 text-muted">Informações dos Responsáveis e Contato</h5>
                          <div class="mb-3">
                             <label for="mae" class="form-label">Nome da Mãe</label>
                             <input type="text" class="form-control" id="mae">
@@ -405,13 +442,12 @@
                         </div>
                          <div class="mb-3">
                             <label for="telefone" class="form-label">Telefone(s)</label>
-                            <input type="text" class="form-control" id="telefone" placeholder="Separe com vírgula: (XX) XXXX-XXXX, (YY) YYYY-YYYY">
+                            <input type="text" class="form-control" id="telefone" placeholder="Separe com vírgula: 98..., 99...">
                         </div>
                          <div class="mb-3">
-                            <label for="endereco" class="form-label">Endereço Completo</label>
+                            <label for="endereco" class="form-label">Endereço</label>
                             <input type="text" class="form-control" id="endereco">
                         </div>
-                        <h5 class="mt-4 mb-3 text-muted">Outras Informações</h5>
                          <div class="mb-3">
                             <label for="cor" class="form-label">Cor/Raça</label>
                             <input type="text" class="form-control" id="cor">
@@ -420,7 +456,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="saveStudent()">Salvar Aluno</button>
+                    <button type="button" class="btn btn-primary" onclick="saveStudent()">Salvar</button>
                 </div>
             </div>
         </div>
@@ -430,16 +466,17 @@
     <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header bg-danger text-white">
+          <div class="modal-header">
             <h5 class="modal-title">Confirmar Exclusão</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <p>Você tem certeza que deseja remover o aluno <strong class="text-danger" id="studentNameToDelete"></strong>? Esta ação não pode ser desfeita.</p>
+            <p>Você tem certeza que deseja remover este aluno? Esta ação não pode ser desfeita.</p>
+            <p class="text-danger fw-bold" id="studentNameToDelete"></p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" id="confirmDeleteBtn"><i data-feather="trash-2"></i> Confirmar Exclusão</button>
+            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Confirmar Exclusão</button>
           </div>
         </div>
       </div>
@@ -463,7 +500,7 @@
             deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
             loadFromLocalStorage();
             renderStudentList();
-            feather.replace(); // Inicializa os ícones Feather
+            feather.replace(); // Inicializa os Feather Icons
         });
 
 
@@ -477,7 +514,7 @@
                 console.log('Dados salvos no LocalStorage.');
             } catch (error) {
                 console.error('Erro ao salvar no LocalStorage:', error);
-                alert('Não foi possível salvar os dados. O armazenamento pode estar cheio ou houve um erro.');
+                alert('Não foi possível salvar os dados. O armazenamento pode estar cheio.');
             }
         }
 
@@ -489,8 +526,7 @@
                     console.log('Dados carregados do LocalStorage.');
                 } catch (error) {
                     console.error('Erro ao ler dados do LocalStorage:', error);
-                    students = []; // Reseta se houver erro de parsing
-                    alert('Erro ao carregar dados salvos. Formato inválido. Os dados foram resetados.');
+                    students = [];
                 }
             }
         }
@@ -520,7 +556,7 @@
                 }
             };
             reader.readAsText(file);
-            event.target.value = null; // Limpa o input file para permitir o mesmo arquivo novamente
+            event.target.value = null; // Limpa o input file para permitir carregar o mesmo arquivo novamente
         }
 
         function downloadJSON() {
@@ -528,17 +564,17 @@
                 alert('Não há dados para baixar.');
                 return;
             }
-            const dataStr = JSON.stringify(students, null, 4); // Formata com 4 espaços
+            const dataStr = JSON.stringify(students, null, 4);
             const dataBlob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(dataBlob);
             
             const link = document.createElement('a');
             link.href = url;
-            link.download = `alunos_abc_kids_${new Date().toISOString().slice(0,10)}.json`; // Nome com data
+            link.download = 'database_alunos.json';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            URL.revokeObjectURL(url); // Libera o URL do objeto
+            URL.revokeObjectURL(url);
         }
 
         // ===================================================================================
@@ -546,13 +582,13 @@
         // ===================================================================================
 
         function getStatusBadge(status) {
-            status = status || 'Ativo';
+            status = status || 'Ativo'; // Padrão é Ativo se não definido
             const statusColors = {
                 'Ativo': 'bg-success',
                 'Transferido': 'bg-warning text-dark',
                 'Inativo': 'bg-secondary',
             };
-            const colorClass = statusColors[status] || 'bg-secondary'; // Fallback
+            const colorClass = statusColors[status] || 'bg-light text-dark';
             return `<span class="badge ${colorClass}">${status}</span>`;
         }
 
@@ -563,45 +599,38 @@
 
             if (students.length === 0) {
                 placeholder.style.display = 'block';
+                feather.replace(); // Garante que o ícone do placeholder seja renderizado
                 return;
             }
             
             placeholder.style.display = 'none';
 
-            // Agrupar e ordenar alunos por 'turma - turno'
-            const groupedByTurmaTurno = students.reduce((acc, student, index) => {
-                const turmaTurnoKey = `${student.turma || 'Sem Turma'} - ${student.turno || 'Sem Turno'}`;
-                if (!acc[turmaTurnoKey]) acc[turmaTurnoKey] = [];
-                acc[turmaTurnoKey].push({ ...student, originalIndex: index }); // Guarda o índice original
+            const groupedByTurma = students.reduce((acc, student, index) => {
+                const turma = student.turma || 'Sem Turma';
+                if (!acc[turma]) acc[turma] = [];
+                acc[turma].push({ ...student, originalIndex: index });
                 return acc;
             }, {});
 
-            const sortedTurmaTurnoKeys = Object.keys(groupedByTurmaTurno).sort((a, b) => {
-                // Ordena por turma e depois por turno
-                const [turmaA, turnoA] = a.split(' - ');
-                const [turmaB, turnoB] = b.split(' - ');
-                if (turmaA !== turmaB) return turmaA.localeCompare(turmaB);
-                return turnoA.localeCompare(turnoB);
-            });
+            const sortedTurmas = Object.keys(groupedByTurma).sort();
 
-            sortedTurmaTurnoKeys.forEach(turmaTurno => {
-                const turmaTitleElement = document.createElement('h4');
-                turmaTitleElement.className = 'turma-title';
-                turmaTitleElement.innerHTML = `<i data-feather="grid"></i> ${turmaTurno}`;
-                container.appendChild(turmaTitleElement);
+            sortedTurmas.forEach(turma => {
+                const turmaTitle = document.createElement('h4');
+                turmaTitle.className = 'turma-title';
+                turmaTitle.textContent = turma;
+                container.appendChild(turmaTitle);
 
-                // Ordenar alunos dentro de cada grupo por nome
-                groupedByTurmaTurno[turmaTurno].sort((a, b) => a.nome.localeCompare(b.nome));
+                groupedByTurma[turma].sort((a, b) => a.nome.localeCompare(b.nome));
 
-                groupedByTurmaTurno[turmaTurno].forEach(student => {
+                groupedByTurma[turma].forEach(student => {
                     const card = document.createElement('div');
-                    card.className = 'card student-card';
+                    card.className = 'card student-card mb-3';
                     card.innerHTML = `
                         <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
                                 <div>
                                     <h5 class="card-title">${student.nome} ${getStatusBadge(student.status)}</h5>
-                                    <h6 class="card-subtitle text-muted">CPF: ${student.cpf || 'Não informado'}</h6>
+                                    <h6 class="card-subtitle">${student.turno || 'Turno não informado'}</h6>
                                 </div>
                                 <div class="d-flex gap-2">
                                     <button class="btn btn-sm btn-outline-primary" onclick="openStudentModal(${student.originalIndex})">
@@ -613,25 +642,20 @@
                                 </div>
                             </div>
                             <hr>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p class="card-text"><strong>Nascimento:</strong> ${student.nascimento || 'Não informado'}</p>
-                                    <p class="card-text"><strong>Mãe:</strong> ${student.mae || 'Não informado'}</p>
-                                    <p class="card-text"><strong>Pai:</strong> ${student.pai || 'Não informado'}</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="card-text"><strong>Telefone:</strong> ${student.telefone && student.telefone.length ? student.telefone.join(', ') : 'Não informado'}</p>
-                                    <p class="card-text"><strong>Endereço:</strong> ${student.endereco || 'Não informado'}</p>
-                                    <p class="card-text"><strong>Cor/Raça:</strong> ${student.cor || 'Não informado'}</p>
-                                </div>
-                            </div>
+                            <p class="card-text"><strong>CPF:</strong> ${student.cpf || '---'}</p>
+                            <p class="card-text"><strong>Nascimento:</strong> ${student.nascimento || '---'}</p>
+                            <p class="card-text"><strong>Mãe:</strong> ${student.mae || '---'}</p>
+                            <p class="card-text"><strong>Pai:</strong> ${student.pai || '---'}</p>
+                            <p class="card-text"><strong>Telefone:</strong> ${student.telefone && student.telefone.length ? student.telefone.join(', ') : '---'}</p>
+                            <p class="card-text"><strong>Endereço:</strong> ${student.endereco || '---'}</p>
+                            <p class="card-text"><strong>Cor/Raça:</strong> ${student.cor || '---'}</p>
                         </div>
                     `;
                     container.appendChild(card);
                 });
             });
 
-            feather.replace(); // Renderiza os ícones após adicionar os cards
+            feather.replace(); // Atualiza os ícones após a renderização dos cards
         }
 
 
@@ -641,7 +665,7 @@
 
         function openStudentModal(index = null) {
             const form = document.getElementById('studentForm');
-            form.reset(); // Limpa o formulário
+            form.reset();
 
             const modalTitle = document.getElementById('studentModalLabel');
             const studentIndexInput = document.getElementById('studentIndex');
@@ -665,7 +689,7 @@
             } else {
                 // Modo Adição
                 modalTitle.textContent = 'Adicionar Novo Aluno';
-                studentIndexInput.value = ''; // Garante que não há índice para adição
+                studentIndexInput.value = '';
                 document.getElementById('status').value = 'Ativo'; // Padrão para novos alunos
             }
 
@@ -675,34 +699,32 @@
         function saveStudent() {
             const index = document.getElementById('studentIndex').value;
             
-            // Tratamento para telefones: string para array
-            const telefones = document.getElementById('telefone').value
-                .split(',')
+            const telefones = document.getElementById('telefone').value.split(',')
                 .map(t => t.trim())
-                .filter(t => t); // Remove strings vazias
+                .filter(t => t);
 
             const studentData = {
-                nome: document.getElementById('nome').value.trim(), // Remove espaços em branco
-                cpf: document.getElementById('cpf').value.trim(),
+                nome: document.getElementById('nome').value,
+                cpf: document.getElementById('cpf').value,
                 status: document.getElementById('status').value,
-                turma: document.getElementById('turma').value.trim(),
-                turno: document.getElementById('turno').value.trim(),
-                nascimento: document.getElementById('nascimento').value.trim(),
-                mae: document.getElementById('mae').value.trim(),
-                pai: document.getElementById('pai').value.trim(),
+                turma: document.getElementById('turma').value,
+                turno: document.getElementById('turno').value,
+                nascimento: document.getElementById('nascimento').value,
+                mae: document.getElementById('mae').value,
+                pai: document.getElementById('pai').value,
                 telefone: telefones,
-                endereco: document.getElementById('endereco').value.trim(),
-                cor: document.getElementById('cor').value.trim(),
+                endereco: document.getElementById('endereco').value,
+                cor: document.getElementById('cor').value,
             };
 
             if (!studentData.nome || !studentData.turma) {
-                alert('Os campos "Nome Completo do Aluno" e "Turma" são obrigatórios.');
+                alert('Os campos "Nome Completo" e "Turma" são obrigatórios.');
                 return;
             }
 
-            if (index !== '') { // Se há um índice, estamos editando
-                students[parseInt(index)] = studentData;
-            } else { // Caso contrário, estamos adicionando
+            if (index !== '') { // Use !== '' para verificar se é um índice válido
+                students[index] = studentData;
+            } else {
                 students.push(studentData);
             }
 
@@ -714,26 +736,26 @@
             const student = students[index];
             document.getElementById('studentNameToDelete').textContent = student.nome;
             
-            // Remove e recria o event listener para evitar múltiplos listeners
             const confirmBtn = document.getElementById('confirmDeleteBtn');
+            // Remove o listener anterior para evitar múltiplos binds
             const newConfirmBtn = confirmBtn.cloneNode(true);
-            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-            
-            newConfirmBtn.addEventListener('click', () => deleteStudent(index));
+            newConfirmBtn.addEventListener('click', () => {
+                deleteStudent(index);
+                deleteModal.hide(); // Fecha o modal após a exclusão
+            });
+            confirmBtn.replaceWith(newConfirmBtn);
 
             deleteModal.show();
         }
 
         function deleteStudent(index) {
-            students.splice(index, 1); // Remove 1 elemento no índice especificado
+            students.splice(index, 1);
             saveAndRender();
-            deleteModal.hide();
         }
         
         function saveAndRender() {
             saveToLocalStorage();
             renderStudentList();
-            feather.replace(); // Garante que os ícones novos também sejam renderizados
         }
     </script>
 </body>

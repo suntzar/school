@@ -605,24 +605,26 @@
             
             placeholder.style.display = 'none';
 
-            const groupedByTurma = students.reduce((acc, student, index) => {
+            const groupedByTurmaTurno = students.reduce((acc, student, index) => {
                 const turma = student.turma || 'Sem Turma';
-                if (!acc[turma]) acc[turma] = [];
-                acc[turma].push({ ...student, originalIndex: index });
+                const turno = student.turno || 'Sem Turno';
+                const groupKey = `${turma} - ${turno}`;
+                if (!acc[groupKey]) acc[groupKey] = [];
+                acc[groupKey].push({ ...student, originalIndex: index });
                 return acc;
             }, {});
 
-            const sortedTurmas = Object.keys(groupedByTurma).sort();
+            const sortedGroups = Object.keys(groupedByTurmaTurno).sort();
 
-            sortedTurmas.forEach(turma => {
-                const turmaTitle = document.createElement('h4');
-                turmaTitle.className = 'turma-title';
-                turmaTitle.textContent = turma;
-                container.appendChild(turmaTitle);
+            sortedGroups.forEach(groupKey => {
+                const groupTitle = document.createElement('h4');
+                groupTitle.className = 'turma-title';
+                groupTitle.textContent = groupKey;
+                container.appendChild(groupTitle);
 
-                groupedByTurma[turma].sort((a, b) => a.nome.localeCompare(b.nome));
+                groupedByTurmaTurno[groupKey].sort((a, b) => a.nome.localeCompare(b.nome));
 
-                groupedByTurma[turma].forEach(student => {
+                groupedByTurmaTurno[groupKey].forEach(student => {
                     const card = document.createElement('div');
                     card.className = 'card student-card mb-3';
                     card.innerHTML = `
@@ -630,7 +632,6 @@
                             <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
                                 <div>
                                     <h5 class="card-title">${student.nome} ${getStatusBadge(student.status)}</h5>
-                                    <h6 class="card-subtitle">${student.turno || 'Turno não informado'}</h6>
                                 </div>
                                 <div class="d-flex gap-2">
                                     <button class="btn btn-sm btn-outline-primary" onclick="openStudentModal(${student.originalIndex})">

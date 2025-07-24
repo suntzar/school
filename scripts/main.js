@@ -15,10 +15,39 @@ document.addEventListener('DOMContentLoaded', () => {
         renderStudentList();
     });
     
+    setupThemeSwitcher();
     loadFromLocalStorage();
     renderStudentList();
     feather.replace();
 });
+
+
+// ===================================================================================
+// LÓGICA DO TEMA (CLARO/ESCURO)
+// ===================================================================================
+function setupThemeSwitcher() {
+    const themeSwitcher = document.getElementById('theme-switcher');
+    const html = document.documentElement;
+    const moonIcon = themeSwitcher.querySelector('.icon-moon');
+    const sunIcon = themeSwitcher.querySelector('.icon-sun');
+
+    const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    
+    html.setAttribute('data-bs-theme', savedTheme);
+    moonIcon.style.display = savedTheme === 'dark' ? 'none' : 'block';
+    sunIcon.style.display = savedTheme === 'dark' ? 'block' : 'none';
+
+    themeSwitcher.addEventListener('click', () => {
+        const currentTheme = html.getAttribute('data-bs-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-bs-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+
+        moonIcon.style.display = newTheme === 'dark' ? 'none' : 'block';
+        sunIcon.style.display = newTheme === 'dark' ? 'block' : 'none';
+        feather.replace(); // Recarrega os ícones para garantir a visibilidade correta
+    });
+}
 
 
 // ===================================================================================
@@ -68,8 +97,8 @@ function getStatusBadge(status) {
 }
 
 function highlightText(text, term) {
-    if (!term) return text;
-    const regex = new RegExp(`(${term})`, 'gi');
+    if (!term || !text) return text || '';
+    const regex = new RegExp(`(${term.replace(/[-\/\^$*+?.()|[\]{}]/g, '\$&')})`, 'gi');
     return text.replace(regex, '<mark>$1</mark>');
 }
 
@@ -132,10 +161,10 @@ function renderStudentList() {
                         </div>
                     </div>
                     <hr>
-                    <p class="card-text"><strong>CPF:</strong> ${highlightText(student.cpf || '---', searchTerm)}</p>
+                    <p class="card-text"><strong>CPF:</strong> ${highlightText(student.cpf, searchTerm)}</p>
                     <p class="card-text"><strong>Nascimento:</strong> ${student.nascimento || '---'}</p>
-                    <p class="card-text"><strong>Mãe:</strong> ${highlightText(student.mae || '---', searchTerm)}</p>
-                    <p class="card-text"><strong>Pai:</strong> ${highlightText(student.pai || '---', searchTerm)}</p>
+                    <p class="card-text"><strong>Mãe:</strong> ${highlightText(student.mae, searchTerm)}</p>
+                    <p class="card-text"><strong>Pai:</strong> ${highlightText(student.pai, searchTerm)}</p>
                     <p class="card-text"><strong>Telefone:</strong> ${student.telefone && student.telefone.length ? student.telefone.join(', ') : '---'}</p>
                     <p class="card-text"><strong>Endereço:</strong> ${student.endereco || '---'}</p>
                     <p class="card-text"><strong>Cor/Raça:</strong> ${student.cor || '---'}</p>

@@ -30,14 +30,10 @@ Este projeto é um gerenciador de alunos simples e intuitivo, projetado para esc
 
 ## Plano para a Próxima Alteração (Atual)
 
-O objetivo desta alteração é implementar um sistema de pesquisa avançado e bem planejado.
+O objetivo desta alteração é organizar o projeto de forma mais modular e limpa.
 
-1.  **Estrutura HTML:** Adicionar um campo de input para a busca acima da lista de alunos.
-2.  **Estilos CSS:** Estilizar o novo campo de busca para se integrar ao design existente.
-3.  **JavaScript:**
-    *   Criar uma nova variável global para armazenar o termo da busca.
-    *   Adicionar um event listener ao campo de busca para disparar a filtragem em tempo real (evento `input`).
-    *   Modificar a função `renderStudentList` para que ela possa receber uma lista de alunos filtrada.
-    *   A lógica de filtragem irá considerar os campos: `nome`, `cpf`, `mae` e `pai`.
-    *   Implementar o destaque do termo pesquisado nos resultados.
-    *   Exibir uma mensagem amigável quando a busca não retornar resultados.
+1.  **Estrutura de Pastas:** Criar as pastas `scripts`, `styles` e `assets/data`.
+2.  **Mover Arquivos:** Mover o arquivo `database_atualizado.json` para a nova pasta `scripts/data`.
+3.  **Separar CSS:** Extrair todo o código CSS inline do `index.html` para um novo arquivo `styles/style.css`.
+4.  **Separar JavaScript:** Mover todo o código JavaScript do `index.html` para um novo arquivo `scripts/main.js`.
+5.  **Atualizar HTML:** Modificar o `index.html` para referenciar os novos arquivos CSS e JavaScript externos.

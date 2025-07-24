@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Alunos para Impressão</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Estilos Gerais e para a Tela */
+        body {
+            font-family: "Roboto Mono", monospace;
+            background-color: #e9ecef;
+            color: #212529;
+            margin: 0;
+            font-size: 9pt;
+        }
+
+        .page-container {
+            width: 190mm; 
+            min-height: 277mm; 
+            margin: 20px auto;
+            padding: 10mm;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .controls {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        #placeholder {
+            text-align: center;
+            color: #6c757d;
+            margin-top: 50px;
+            font-style: italic;
+        }
+
+        /* Estrutura do Documento */
+        .doc-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 1.5px solid #000;
+        }
+        .doc-header h1 { font-size: 14pt; margin: 0; font-weight: bold; }
+        .doc-header p { font-size: 11pt; margin: 0; }
+
+        .turma-title {
+            text-align: center;
+            font-size: 12pt;
+            font-weight: bold;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        /* Tabela Otimizada para Impressão */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #333;
+            padding: 6px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        thead th {
+            font-weight: bold;
+            background-color: #f2f2f2;
+        }
+        
+        tbody tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+        
+        td p {
+            margin: 0;
+            padding: 2px 0;
+        }
+        
+        .student-name-main {
+            font-weight: 600;
+        }
+        
+        .field-label {
+            font-weight: 600;
+            color: #444;
+            margin-right: 5px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 7pt;
+            font-weight: bold;
+            color: #fff;
+            margin-left: 8px;
+            text-transform: uppercase;
+            vertical-align: middle;
+            -webkit-print-color-adjust: exact; /* FORÇA A IMPRESSÃO DA COR */
+            print-color-adjust: exact;      /* VERSÃO PADRÃO */
+        }
+        .status-ativo { background-color: #198754 !important; }
+        .status-transferido { background-color: #ffc107 !important; color: #000 !important; }
+        .status-inativo { background-color: #6c757d !important; }
+
+        .col-numero { width: 4%; text-align: center; }
+        .col-aluno { width: 30%; }
+        .col-dados { width: 16%; }
+        .col-filiacao { width: 22%; }
+        .col-contato { width: 28%; }
+
+        @media print {
+            body { background-color: #fff; }
+            .controls, .page-container { box-shadow: none; }
+            .controls { display: none; }
+            .page-container {
+                width: auto;
+                min-height: 0;
+                margin: 0;
+                padding: 0;
+            }
+            thead {
+                background-color: #f2f2f2 !important; /* Garante que o fundo do header também imprima */
+            }
+            tbody tr:nth-child(even) {
+                background-color: #f8f8f8 !important; /* Força impressão das linhas zebradas */
+            }
+            tr, .turma-title { page-break-inside: avoid; }
+            .page-break { page-break-before: always; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <button onclick="document.getElementById('fileInput').click()">Carregar Arquivo JSON</button>
+        <input type="file" id="fileInput" onchange="handleFile(event)" style="display: none;">
+        <p style="font-family: sans-serif; font-size: small; color: #6c757d; margin-top: 10px;">Após carregar, use a função de impressão do navegador (Ctrl+P ou Cmd+P).</p>
+    </div>
+
+    <div class="page-container">
+        <div id="print-area">
+            <p id="placeholder">A lista de alunos aparecerá aqui.</p>
+        </div>
+    </div>
+
+    <script>
+        // O JavaScript permanece o mesmo, não precisa de alterações.
+        function handleFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const students = JSON.parse(e.target.result);
+                    renderListForPrint(students);
+                } catch (error) {
+                    document.getElementById('print-area').innerHTML = `<p id="placeholder">Erro ao ler o arquivo.</p>`;
+                    console.error("Erro ao processar JSON:", error);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function getStatusBadge(status) {
+            status = status || 'Ativo';
+            const statusColors = {
+                'Ativo': 'status-ativo',
+                'Transferido': 'status-transferido',
+                'Inativo': 'status-inativo',
+            };
+            const colorClass = statusColors[status] || 'status-inativo';
+            return `<span class="status-badge ${colorClass}">${status}</span>`;
+        }
+
+        function renderListForPrint(students) {
+            const printArea = document.getElementById('print-area');
+            printArea.innerHTML = '';
+
+            const docHeader = document.createElement('div');
+            docHeader.className = 'doc-header';
+            docHeader.innerHTML = `<h1>E. M. ANA MARIA CORDEIRO DE SOUSA</h1><p>LISTA DE ALUNOS</p>`;
+            printArea.appendChild(docHeader);
+
+            const groupedByTurma = students.reduce((acc, student) => {
+                (acc[student.turma] = acc[student.turma] || []).push(student);
+                return acc;
+            }, {});
+
+            const sortedTurmas = Object.keys(groupedByTurma).sort();
+
+            sortedTurmas.forEach((turma, turmaIndex) => {
+                const turmaContainer = document.createElement('div');
+                if (turmaIndex > 0) {
+                    turmaContainer.className = 'page-break';
+                }
+                
+                const turno = groupedByTurma[turma][0]?.turno || '';
+                turmaContainer.innerHTML = `<h2 class="turma-title">TURMA: ${turma} – ${turno}</h2>`;
+
+                const table = document.createElement('table');
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th class="col-numero">N°</th>
+                            <th class="col-aluno">Aluno / Status</th>
+                            <th class="col-dados">Dados Pessoais</th>
+                            <th class="col-filiacao">Filiação</th>
+                            <th class="col-contato">Contato</th>
+                        </tr>
+                    </thead>
+                `;
+                const tbody = document.createElement('tbody');
+                
+                groupedByTurma[turma].sort((a, b) => a.nome.localeCompare(b.nome));
+
+                groupedByTurma[turma].forEach((student, index) => {
+                    const row = document.createElement('tr');
+                    const safeText = (text) => text || '---';
+
+                    row.innerHTML = `
+                        <td class="col-numero">${index + 1}</td>
+                        <td class="col-aluno">
+                            <span class="student-name-main">${safeText(student.nome)}</span>
+                            ${getStatusBadge(student.status)}
+                        </td>
+                        <td class="col-dados">
+                            <p><span class="field-label">Nasc:</span>${safeText(student.nascimento)}</p>
+                            <p><span class="field-label">Cor:</span>${safeText(student.cor)}</p>
+                        </td>
+                        <td class="col-filiacao">
+                            <p><span class="field-label">Mãe:</span>${safeText(student.mae)}</p>
+                            <p><span class="field-label">Pai:</span>${safeText(student.pai)}</p>
+                        </td>
+                        <td class="col-contato">
+                            <p><span class="field-label">Tel:</span>${student.telefone && student.telefone.length ? student.telefone.join(', ') : '---'}</p>
+                            <p><span class="field-label">End:</span>${safeText(student.endereco)}</p>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                table.appendChild(tbody);
+                turmaContainer.appendChild(table);
+                printArea.appendChild(turmaContainer);
+            });
+        }
+    </script>
+</body>
+</html>

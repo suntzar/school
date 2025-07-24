@@ -148,9 +148,8 @@
 <body>
 
     <div class="controls">
-        <button onclick="document.getElementById('fileInput').click()">Carregar Arquivo JSON</button>
-        <input type="file" id="fileInput" onchange="handleFile(event)" style="display: none;">
-        <p style="font-family: sans-serif; font-size: small; color: #6c757d; margin-top: 10px;">Após carregar, use a função de impressão do navegador (Ctrl+P ou Cmd+P).</p>
+        <button onclick="window.print()">Imprimir Lista</button>
+        <p style="font-family: sans-serif; font-size: small; color: #6c757d; margin-top: 10px;">Use a função de impressão do navegador (Ctrl+P ou Cmd+P).</p>
     </div>
 
     <div class="page-container">
@@ -160,23 +159,26 @@
     </div>
 
     <script>
-        // O JavaScript permanece o mesmo, não precisa de alterações.
-        function handleFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const dataUrl = params.get('data');
 
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const students = JSON.parse(e.target.result);
-                    renderListForPrint(students);
-                } catch (error) {
-                    document.getElementById('print-area').innerHTML = `<p id="placeholder">Erro ao ler o arquivo.</p>`;
-                    console.error("Erro ao processar JSON:", error);
-                }
-            };
-            reader.readAsText(file);
-        }
+            if (dataUrl) {
+                fetch(decodeURIComponent(dataUrl))
+                    .then(response => response.json())
+                    .then(students => {
+                        renderListForPrint(students);
+                        // Clean up the blob URL
+                        URL.revokeObjectURL(decodeURIComponent(dataUrl));
+                    })
+                    .catch(error => {
+                        document.getElementById('print-area').innerHTML = `<p id="placeholder">Erro ao carregar os dados dos alunos.</p>`;
+                        console.error("Erro ao carregar dados da URL:", error);
+                    });
+            } else {
+                 document.getElementById('print-area').innerHTML = `<p id="placeholder">Nenhum dado de aluno encontrado.</p>`;
+            }
+        });
 
         function getStatusBadge(status) {
             status = status || 'Ativo';

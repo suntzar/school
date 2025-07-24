@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
         renderStudentList();
     });
     
+    document.getElementById('print-list-btn').addEventListener('click', openPrintPage);
+
     setupThemeSwitcher();
     loadFromLocalStorage();
     renderStudentList();
@@ -85,6 +87,20 @@ function downloadJSON() {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
 }
+
+function openPrintPage() {
+    saveToLocalStorage(); 
+    const dataIsSaved = localStorage.getItem('studentDatabase');
+    
+    if (dataIsSaved && students.length > 0) {
+        const blob = new Blob([dataIsSaved], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        window.open(`print-students.html?data=${encodeURIComponent(url)}`, '_blank');
+    } else {
+        alert('Não há dados de alunos para imprimir. Adicione ou carregue uma lista primeiro.');
+    }
+}
+
 
 // ===================================================================================
 // RENDERIZAÇÃO DA LISTA DE ALUNOS

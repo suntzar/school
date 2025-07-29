@@ -249,7 +249,27 @@
                 const tbody = document.createElement('tbody');
                 
                 const studentsInGroup = groupedData[groupKey];
-                studentsInGroup.sort((a, b) => a.nome.localeCompare(b.nome));
+                
+                // New sorting logic for status
+                studentsInGroup.sort((a, b) => {
+                    const statusOrder = {
+                        'Ativo': 1,
+                        '': 1, // Undefined or empty status as 'Ativo'
+                        undefined: 1, // Undefined or empty status as 'Ativo'
+                        'Inativo': 2,
+                        'Transferido': 3
+                    };
+
+                    const statusA = statusOrder[a.status] || statusOrder['']; // Handle undefined/empty
+                    const statusB = statusOrder[b.status] || statusOrder['']; // Handle undefined/empty
+
+                    if (statusA !== statusB) {
+                        return statusA - statusB;
+                    }
+                    
+                    // If statuses are the same, sort by name
+                    return a.nome.localeCompare(b.nome);
+                });
 
                 studentsInGroup.forEach((student, index) => {
                     const row = document.createElement('tr');

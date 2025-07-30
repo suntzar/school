@@ -150,6 +150,10 @@
 
     <div class="controls">
         <button onclick="window.print()">Imprimir Lista</button>
+        <div style="margin-top: 10px; font-family: sans-serif; font-size: small;">
+            <input type="checkbox" id="hide-inactive" onchange="toggleInactiveStudents()">
+            <label for="hide-inactive">Ocultar alunos "Transferido" e "Inativo"</label>
+        </div>
         <p style="font-family: sans-serif; font-size: small; color: #6c757d; margin-top: 10px;">Use a função de impressão do navegador (Ctrl+P ou Cmd+P).</p>
     </div>
 
@@ -160,6 +164,8 @@
     </div>
 
     <script>
+        window.allStudents = [];
+
         document.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
             const dataUrl = params.get('data');
@@ -168,6 +174,7 @@
                 fetch(decodeURIComponent(dataUrl))
                     .then(response => response.json())
                     .then(students => {
+                        window.allStudents = students;
                         renderListForPrint(students);
                         // Clean up the blob URL
                         URL.revokeObjectURL(decodeURIComponent(dataUrl));
@@ -180,6 +187,15 @@
                  document.getElementById('print-area').innerHTML = `<p id="placeholder">Nenhum dado de aluno encontrado.</p>`;
             }
         });
+
+        function toggleInactiveStudents() {
+            const hideInactive = document.getElementById('hide-inactive').checked;
+            let studentsToRender = window.allStudents;
+            if (hideInactive) {
+                studentsToRender = window.allStudents.filter(student => student.status !== 'Transferido' && student.status !== 'Inativo');
+            }
+            renderListForPrint(studentsToRender);
+        }
 
         function getStatusBadge(status) {
             status = status || 'Ativo';

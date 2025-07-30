@@ -211,6 +211,8 @@
         function renderListForPrint(students) {
             const printArea = document.getElementById('print-area');
             printArea.innerHTML = '';
+            
+            const hideBadges = document.getElementById('hide-inactive') ? document.getElementById('hide-inactive').checked : false;
 
             const docHeader = document.createElement('div');
             docHeader.className = 'doc-header';
@@ -266,36 +268,35 @@
                 
                 const studentsInGroup = groupedData[groupKey];
                 
-                // New sorting logic for status
                 studentsInGroup.sort((a, b) => {
                     const statusOrder = {
                         'Ativo': 1,
-                        '': 1, // Undefined or empty status as 'Ativo'
-                        undefined: 1, // Undefined or empty status as 'Ativo'
+                        '': 1, 
+                        undefined: 1,
                         'Inativo': 2,
                         'Transferido': 3
                     };
 
-                    const statusA = statusOrder[a.status] || statusOrder['']; // Handle undefined/empty
-                    const statusB = statusOrder[b.status] || statusOrder['']; // Handle undefined/empty
+                    const statusA = statusOrder[a.status] || statusOrder[''];
+                    const statusB = statusOrder[b.status] || statusOrder[''];
 
                     if (statusA !== statusB) {
                         return statusA - statusB;
                     }
                     
-                    // If statuses are the same, sort by name
                     return a.nome.localeCompare(b.nome);
                 });
 
                 studentsInGroup.forEach((student, index) => {
                     const row = document.createElement('tr');
                     const safeText = (text) => text || '---';
+                    const statusBadge = hideBadges ? '' : getStatusBadge(student.status);
 
                     row.innerHTML = `
                         <td class="col-numero">${index + 1}</td>
                         <td class="col-aluno">
                             <span class="student-name-main">${safeText(student.nome)}</span>
-                            ${getStatusBadge(student.status)}
+                            ${statusBadge}
                         </td>
                         <td class="col-dados">
                             <p><span class="field-label">Nasc:</span>${safeText(student.nascimento)}</p>
